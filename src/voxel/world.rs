@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use crate::alert;
 use crate::voxel::CHUNK_SIZE;
 use crate::voxel::chunk;
 use crate::voxel::mesh;
