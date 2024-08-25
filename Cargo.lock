@@ -73,7 +73,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust-voxel"
+name = "rust-greedy-voxel"
 version = "0.1.0"
 dependencies = [
  "getrandom",

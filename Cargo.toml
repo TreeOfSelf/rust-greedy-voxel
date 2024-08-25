@@ -1,5 +1,5 @@
 [package]
-name = "rust-voxel"
+name = "rust-greedy-voxel"
 version = "0.1.0"
 authors = ["Sebastian Frederick <sebastian@sebastiancodes.online>"]
 description = "A voxel mesher and control for Rust"

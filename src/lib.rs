@@ -15,6 +15,6 @@ pub fn mesh() -> Vec<i32> {
     voxel::world::change_block(&mut world,2,1,0,1);
     voxel::world::change_block(&mut world,2,2,0,1);
 
-    world.chunks.get(&0).unwrap().mesh.clone()
+    world.chunks.get(&0).unwrap().vertices.clone()
 }
 

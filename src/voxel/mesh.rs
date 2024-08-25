@@ -1,14 +1,13 @@
-use crate::log;
-use crate::voxel::CHUNK_SIZE;
+use crate::voxel::drawdata::DrawData;
 use crate::voxel::chunk;
 
-pub fn greedy(chunk: &chunk::Chunk) -> Vec<i32> {
+pub fn greedy(chunk: &chunk::Chunk) -> DrawData {
     fn get_voxel(chunk: &chunk::Chunk, i: i32, j: i32, k: i32) -> i32 {
         let index: usize = (i + chunk.dims[0] as i32 * (j + chunk.dims[1] as i32 * k)) as usize;
         chunk.volume[index]    
     }
     
-    let mut vertices: Vec<i32> = Vec::new();
+    let mut draw_data = DrawData::default();
     
     //Sweep over 3-axis
     for d in 0..3 {
@@ -16,7 +15,7 @@ pub fn greedy(chunk: &chunk::Chunk) -> Vec<i32> {
         let v: usize = (d+2)%3;
 		let mut x: [i32; 3] = [0, 0, 0];
         let mut q: [i32; 3] = [0,0,0];
-        let mut mask: Vec<bool> = vec![false; (chunk.dims[u] * chunk.dims[v]) as usize];
+        let mut mask: Vec<bool> = vec![false; chunk.dims[u] * chunk.dims[v]];
         q[d] = 1;
 		x[d] = -1;
 
@@ -27,7 +26,7 @@ pub fn greedy(chunk: &chunk::Chunk) -> Vec<i32> {
                 for xu in 0..chunk.dims[u] {
                     x[v] = xv as i32;
                     x[u] = xu as i32;
-                    let n: usize = xu + xv * chunk.dims[u] as usize;
+                    let n: usize = xu + xv * chunk.dims[u];
                     let mut check_one: i32 = 0;
                     let mut check_two: i32 = 0;
                     
@@ -38,7 +37,7 @@ pub fn greedy(chunk: &chunk::Chunk) -> Vec<i32> {
                         check_two = get_voxel(chunk, x[0]+q[0], x[1]+q[1], x[2]+q[2]);
                     }
                     
-                    mask[n as usize] = check_one != check_two;
+                    mask[n] = check_one != check_two;
                 }
             }
 
@@ -75,10 +74,10 @@ pub fn greedy(chunk: &chunk::Chunk) -> Vec<i32> {
                         du[u] = w;
                         dv[v] = h;
 
-                        vertices.extend_from_slice(&[x[0], x[1], x[2]]);
-                        vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]);
-                        vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]);
-                        vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]);
+                        draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]);
+                        draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]);
+                        draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]);
+                        draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]);
                         
                         // Zero-out mask
                         for l in 0..h {
@@ -98,5 +97,5 @@ pub fn greedy(chunk: &chunk::Chunk) -> Vec<i32> {
             }
         }
     }
-    vertices
+    draw_data
 }

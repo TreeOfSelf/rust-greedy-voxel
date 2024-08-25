@@ -25,5 +25,6 @@ pub fn change_block(world: &mut World, x: i32, y: i32, z: i32, block: i32) {
 	
 	let chunk: &mut chunk::Chunk = world.chunks.get_mut(&chunk_index).unwrap();
 	chunk.volume[block_id as usize] = block;
-	chunk.mesh = mesh::greedy(chunk);
+    let chunk_draw_data = mesh::greedy(chunk);
+	chunk.vertices = chunk_draw_data.vertices;
 }
