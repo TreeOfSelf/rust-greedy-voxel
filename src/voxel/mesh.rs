@@ -103,9 +103,10 @@ pub fn greedy(chunk: &chunk::Chunk) {
     match &chunk.vertices {
         Some(shared_array_buffer) => {
             let int_array = Int32Array::new(shared_array_buffer);
-            for x in 0..int_array.length() {
+            int_array.set_index(0, draw_data.vertices.len() as i32);
+            for x in 1..int_array.length() {
                 if x < draw_data.vertices.len() as u32 {
-                    int_array.set_index(x, draw_data.vertices[x as usize]);
+                    int_array.set_index(x, draw_data.vertices[(x - 1) as usize]);
                 } else {
                     log("Reached end of draw_data.vertices");
                     break;

@@ -4,9 +4,8 @@ use std::rc::Rc;
 mod voxel;
 use js_sys::SharedArrayBuffer;
 
-
 thread_local! {
-    static WORLD: RefCell<Option<Rc<RefCell<voxel::world::World>>>> = RefCell::new(None);
+    static WORLD: RefCell<Option<Rc<RefCell<voxel::world::World>>>> = const { RefCell::new(None) };
 }
 
 #[wasm_bindgen(js_namespace = console)]
@@ -23,7 +22,6 @@ pub fn initialize_world() {
 
 #[wasm_bindgen]
 pub fn mesh() {
-
     WORLD.with(|world| {
         if let Some(world) = world.borrow().as_ref() {
             let mut world = world.borrow_mut();
@@ -35,7 +33,6 @@ pub fn mesh() {
             log("World not initialized");
         }
     });
-
 }
 
 #[wasm_bindgen]
