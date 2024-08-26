@@ -2,7 +2,8 @@ use std::collections::HashMap;
 use crate::voxel::CHUNK_SIZE;
 use crate::voxel::chunk;
 use crate::voxel::mesh;
-
+use crate::log;
+use js_sys::SharedArrayBuffer;
 
 pub struct World {
 	pub chunks: HashMap<i32, chunk::Chunk>,
@@ -25,6 +26,19 @@ pub fn change_block(world: &mut World, x: i32, y: i32, z: i32, block: i32) {
 	
 	let chunk: &mut chunk::Chunk = world.chunks.get_mut(&chunk_index).unwrap();
 	chunk.volume[block_id as usize] = block;
-    let chunk_draw_data = mesh::greedy(chunk);
-	chunk.vertices = chunk_draw_data.vertices;
+    mesh::greedy(chunk);
+
+    log(&chunk_index.to_string());
+}
+
+pub fn consume_chunk_buffer(world: &mut World, chunk_index: i32, shared_buffer: SharedArrayBuffer) { 
+
+    if !world.chunks.contains_key(&chunk_index) {
+		chunk::create(world, chunk_index);
+	}
+
+    let chunk: &mut chunk::Chunk = world.chunks.get_mut(&chunk_index).unwrap();
+
+    chunk.vertices = Some(shared_buffer);
+    
 }

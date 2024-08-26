@@ -1,13 +1,16 @@
+use crate::log;
 use crate::voxel::drawdata::DrawData;
 use crate::voxel::chunk;
+use js_sys::Int32Array;
 
-pub fn greedy(chunk: &chunk::Chunk) -> DrawData {
+
+pub fn greedy(chunk: &chunk::Chunk) {
     fn get_voxel(chunk: &chunk::Chunk, i: i32, j: i32, k: i32) -> i32 {
         let index: usize = (i + chunk.dims[0] as i32 * (j + chunk.dims[1] as i32 * k)) as usize;
         chunk.volume[index]    
     }
     
-    let mut draw_data = DrawData::default();
+    let mut draw_data: DrawData = DrawData::default();
     
     //Sweep over 3-axis
     for d in 0..3 {
@@ -97,5 +100,22 @@ pub fn greedy(chunk: &chunk::Chunk) -> DrawData {
             }
         }
     }
-    draw_data
+    match &chunk.vertices {
+        Some(shared_array_buffer) => {
+            let int_array = Int32Array::new(shared_array_buffer);
+            for x in 0..int_array.length() {
+                if x < draw_data.vertices.len() as u32 {
+                    int_array.set_index(x, draw_data.vertices[x as usize]);
+                } else {
+                    log("Reached end of draw_data.vertices");
+                    break;
+                }
+            }
+
+        }
+        None => {
+            log("Didn't find");
+        }
+    }
+
 }
