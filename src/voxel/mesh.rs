@@ -1,13 +1,24 @@
 use crate::log;
 use crate::voxel::drawdata::DrawData;
 use crate::voxel::chunk;
-use js_sys::Int32Array;
+use js_sys::{Int32Array, Uint8Array};
 
 
 pub fn greedy(chunk: &chunk::Chunk) {
     fn get_voxel(chunk: &chunk::Chunk, i: i32, j: i32, k: i32) -> i32 {
+        let mut return_value: i32 = 0;
+
         let index: usize = (i + chunk.dims[0] as i32 * (j + chunk.dims[1] as i32 * k)) as usize;
-        chunk.volume[index]    
+        match &chunk.volume {
+            Some(shared_array_buffer) => {
+                let volume_array: Uint8Array = Uint8Array::new(shared_array_buffer);
+                return_value = volume_array.get_index(index as u32) as i32;
+            }        
+            None => {
+                log("Didn't find");
+            }
+        }
+        return_value
     }
     
     let mut draw_data: DrawData = DrawData::default();

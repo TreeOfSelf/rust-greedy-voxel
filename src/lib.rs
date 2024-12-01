@@ -29,6 +29,8 @@ pub fn mesh() {
             voxel::world::change_block(&mut world, 0, 1, 0, 1);
             voxel::world::change_block(&mut world, 2, 1, 0, 1);
             voxel::world::change_block(&mut world, 2, 2, 0, 1);
+            voxel::world::change_block(&mut world, 20, 20, 0, 1);
+
         } else {
             log("World not initialized");
         }
@@ -36,11 +38,24 @@ pub fn mesh() {
 }
 
 #[wasm_bindgen]
-pub fn consume_chunk_buffers(chunk_index: i32, shared_buffer: SharedArrayBuffer) {
+pub fn starter_block() {
+    WORLD.with(|world| {
+        if let Some(world) = world.borrow().as_ref() {
+            let mut world = world.borrow_mut();
+            voxel::world::change_block(&mut world, 0, 0, 0, 1);
+        } else {
+            log("World not initialized");
+        }
+    });  
+}
+
+
+#[wasm_bindgen]
+pub fn consume_chunk_buffers(chunk_index: i32, vertice_buffer: SharedArrayBuffer, volume_buffer: SharedArrayBuffer) {
   WORLD.with(|world| {
         if let Some(world) = world.borrow().as_ref() {
             let mut world = world.borrow_mut();
-            voxel::world::consume_chunk_buffer(&mut world, chunk_index, shared_buffer);
+            voxel::world::consume_chunk_buffer(&mut world, chunk_index, vertice_buffer, volume_buffer);
         } else {
             log("World not initialized");
         }

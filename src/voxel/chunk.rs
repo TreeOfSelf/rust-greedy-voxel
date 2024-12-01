@@ -4,17 +4,17 @@ use crate::voxel::world::*;
 use js_sys::SharedArrayBuffer;
 
 pub struct Chunk {
-    pub volume: [i32; CHUNK_SIZE as usize * CHUNK_SIZE as usize * CHUNK_SIZE as usize],
     pub dims: [usize; 3],
-    pub vertices: Option<SharedArrayBuffer>
+    pub vertices: Option<SharedArrayBuffer>,
+    pub volume: Option<SharedArrayBuffer>
 }
 
 impl Default for Chunk {
     fn default() -> Chunk {
         Chunk {
-            volume: [0; CHUNK_SIZE as usize * CHUNK_SIZE as usize * CHUNK_SIZE as usize],
-			dims: [CHUNK_SIZE as usize, CHUNK_SIZE as usize, CHUNK_SIZE as usize],
+            dims: [CHUNK_SIZE as usize, CHUNK_SIZE as usize, CHUNK_SIZE as usize],
             vertices: None,
+            volume: None
         }
     }
 }
