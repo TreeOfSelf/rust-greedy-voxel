@@ -42,7 +42,11 @@ pub fn starter_block() {
     WORLD.with(|world| {
         if let Some(world) = world.borrow().as_ref() {
             let mut world = world.borrow_mut();
-            voxel::world::change_block(&mut world, 0, 0, 0, 1);
+            voxel::world::change_block(&mut world, 2, 0, 0, 1);
+            voxel::world::change_block(&mut world, 2, 1, 0, 1);
+
+            voxel::world::change_block(&mut world, 4, 0, 0, 1);
+
         } else {
             log("World not initialized");
         }

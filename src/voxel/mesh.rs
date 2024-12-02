@@ -34,7 +34,8 @@ pub fn greedy(chunk: &chunk::Chunk) {
 		x[d] = -1;
 
 		while x[d] < chunk.dims[d] as i32 {
-            
+            let mut positive = false;
+
             // Compute mask
             for xv in 0..chunk.dims[v] {
                 for xu in 0..chunk.dims[u] {
@@ -50,6 +51,11 @@ pub fn greedy(chunk: &chunk::Chunk) {
                     if x[d] < (chunk.dims[d]-1) as i32 {
                         check_two = get_voxel(chunk, x[0]+q[0], x[1]+q[1], x[2]+q[2]);
                     }
+
+                    if check_one != 0 && check_two == 0 {
+                        positive = true;
+                    }
+                    
                     
                     mask[n] = check_one != check_two;
                 }
@@ -62,6 +68,8 @@ pub fn greedy(chunk: &chunk::Chunk) {
             for j in 0..chunk.dims[v] {
                 let mut i = 0;
                 while i < chunk.dims[u] {
+
+
                     if mask[n] {
                         // Compute width
                         let mut w: usize = 1;
@@ -88,10 +96,50 @@ pub fn greedy(chunk: &chunk::Chunk) {
                         du[u] = w;
                         dv[v] = h;
 
-                        draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]);
-                        draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]);
-                        draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]);
-                        draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]);
+                        log(format!("Axis d: {}, positive: {:?}", d, positive).as_str()); // Add this line to check the state of q
+                        match (d, positive) {
+                            (0,true) => {
+                                draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]); //0 
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]); //1
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]); //2
+                                draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]); //3
+                            },
+                            (0,false) => {
+                                draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]); //0 
+                                draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]); //3
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]); //2
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]); //1
+                            },
+                            (1,true) => {
+                                draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]); //0 
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]); //1
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]); //2
+                                draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]); //3
+                            },
+                            (1,false) => {
+                                draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]); //0 
+                                draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]); //3
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]); //2
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]); //1
+                            },
+                            (2,true) => {
+                                draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]); //0 
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]); //1
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]); //2
+                                draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]); //3
+                            },
+                            (2,false) => {
+                                draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]); //0 
+                                draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]); //3
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32+dv[0] as i32, x[1]+du[1] as i32+dv[1] as i32, x[2]+du[2] as i32+dv[2] as i32]); //2
+                                draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]); //1
+
+                            },
+                            _ => {
+                                log("Invalid axis value.");
+                            }
+                        }
+                
                         
                         // Zero-out mask
                         for l in 0..h {
@@ -116,7 +164,7 @@ pub fn greedy(chunk: &chunk::Chunk) {
             let int_array = Int32Array::new(shared_array_buffer);
             int_array.set_index(0, draw_data.vertices.len() as i32);
             for x in 1..int_array.length() {
-                if x < draw_data.vertices.len() as u32 {
+                if x < (draw_data.vertices.len()+1) as u32 {
                     int_array.set_index(x, draw_data.vertices[(x - 1) as usize]);
                 } else {
                     log("Reached end of draw_data.vertices");
