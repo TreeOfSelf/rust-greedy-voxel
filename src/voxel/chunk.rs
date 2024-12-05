@@ -6,7 +6,9 @@ use js_sys::SharedArrayBuffer;
 pub struct Chunk {
     pub dims: [usize; 3],
     pub vertices: Option<SharedArrayBuffer>,
-    pub volume: Option<SharedArrayBuffer>
+    pub volume: Option<SharedArrayBuffer>,
+    pub block_type: Option<SharedArrayBuffer>,
+    pub texture_coordinates: Option<SharedArrayBuffer>
 }
 
 impl Default for Chunk {
@@ -14,7 +16,9 @@ impl Default for Chunk {
         Chunk {
             dims: [CHUNK_SIZE as usize, CHUNK_SIZE as usize, CHUNK_SIZE as usize],
             vertices: None,
-            volume: None
+            volume: None,
+            block_type: None,
+            texture_coordinates: None,
         }
     }
 }

@@ -42,10 +42,16 @@ pub fn starter_block() {
     WORLD.with(|world| {
         if let Some(world) = world.borrow().as_ref() {
             let mut world = world.borrow_mut();
-            voxel::world::change_block(&mut world, 2, 0, 0, 1);
-            voxel::world::change_block(&mut world, 2, 1, 0, 1);
+            /*voxel::world::change_block(&mut world, 0, 0, 0, 4);
+            voxel::world::change_block(&mut world, 0, 1, 0, 3);
+            voxel::world::change_block(&mut world, 0, 2, 0, 2);
+            */
+            voxel::world::change_block(&mut world, 0, 3, 0, 5);
+            voxel::world::change_block(&mut world, 0, 4, 0, 4);
+            voxel::world::change_block(&mut world, 0, 5, 0, 4);
+            voxel::world::change_block(&mut world, 2, 5, 2, 5);
 
-            voxel::world::change_block(&mut world, 4, 0, 0, 1);
+
 
         } else {
             log("World not initialized");
@@ -55,11 +61,20 @@ pub fn starter_block() {
 
 
 #[wasm_bindgen]
-pub fn consume_chunk_buffers(chunk_index: i32, vertice_buffer: SharedArrayBuffer, volume_buffer: SharedArrayBuffer) {
+pub fn consume_chunk_buffers(chunk_index: i32, 
+    vertice_buffer: SharedArrayBuffer, 
+    volume_buffer: SharedArrayBuffer,
+    block_type_buffer: SharedArrayBuffer,
+    texture_coordinates_buffer: SharedArrayBuffer,
+) {
   WORLD.with(|world| {
         if let Some(world) = world.borrow().as_ref() {
             let mut world = world.borrow_mut();
-            voxel::world::consume_chunk_buffer(&mut world, chunk_index, vertice_buffer, volume_buffer);
+            voxel::world::consume_chunk_buffer(&mut world, chunk_index, 
+                vertice_buffer, 
+                volume_buffer,
+                block_type_buffer,
+                texture_coordinates_buffer);
         } else {
             log("World not initialized");
         }
