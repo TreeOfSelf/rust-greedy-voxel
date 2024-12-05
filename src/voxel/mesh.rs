@@ -62,8 +62,6 @@ pub fn greedy(chunk: &chunk::Chunk) {
                         } else {
                             mask[n] = check_two as u8;
                         }
-                    } else {
-                        mask[n] = check_one as u8;
                     }
                 }
             }
@@ -110,7 +108,7 @@ pub fn greedy(chunk: &chunk::Chunk) {
                             draw_data.vertices.extend_from_slice(&[x[0]+dv[0] as i32, x[1]+dv[1] as i32, x[2]+dv[2] as i32]); //3
 
                             draw_data.block_type.extend_from_slice(&[mask[n] as i32 - 1, mask[n] as i32 - 1, mask[n] as i32 - 1, mask[n] as i32 - 1]);
-                            draw_data.texture_coordinates.extend_from_slice(&[0,0, 1,0, 1,1, 0,1]);
+                            draw_data.texture_coordinates.extend_from_slice(&[0,0, w as i32 ,0, w as i32,h as i32, 0,h as i32]);
 
                         } else {
                             draw_data.vertices.extend_from_slice(&[x[0], x[1], x[2]]); //0 
@@ -119,7 +117,9 @@ pub fn greedy(chunk: &chunk::Chunk) {
                             draw_data.vertices.extend_from_slice(&[x[0]+du[0] as i32, x[1]+du[1] as i32, x[2]+du[2] as i32]); //1
                             
                             draw_data.block_type.extend_from_slice(&[mask[n] as i32 - 1, mask[n] as i32 - 1, mask[n] as i32 - 1, mask[n] as i32 - 1]);
-                            draw_data.texture_coordinates.extend_from_slice(&[0,0, 1,0, 1,1, 0,1]);
+                            draw_data.texture_coordinates.extend_from_slice(&[
+                                0,0, 0,h as i32,w as i32,h as i32, w as i32 ,0
+                            ]);
                         }
                         
                         // Zero-out mask

@@ -46,11 +46,10 @@ pub fn starter_block() {
             voxel::world::change_block(&mut world, 0, 1, 0, 3);
             voxel::world::change_block(&mut world, 0, 2, 0, 2);
             */
-            voxel::world::change_block(&mut world, 0, 3, 0, 5);
-            voxel::world::change_block(&mut world, 0, 4, 0, 4);
-            voxel::world::change_block(&mut world, 0, 5, 0, 4);
-            voxel::world::change_block(&mut world, 2, 5, 2, 5);
-
+            voxel::world::change_block(&mut world, 0, 3, 0, 1);
+            voxel::world::change_block(&mut world, 1, 3, 0, 1);
+            voxel::world::change_block(&mut world, 1, 3, 1, 1);
+            voxel::world::change_block(&mut world, 0, 3, 1, 1);
 
 
         } else {
